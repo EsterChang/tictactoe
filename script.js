@@ -74,10 +74,11 @@ const gameboard = (() => {
 
     const checkWin = (playerSpaces) => {
         for (const combo of winCombos) {
-            console.log(`checking combo ${combo}`);
+            console.log(`checking combo ${JSON.stringify(combo)}`);
             let matches = 0;
             for (const space of combo) {
-                if (!playerSpaces.includes(space)) {
+                // console.log(`is ${space} in ${JSON.stringify(playerSpaces)}: ${playerSpaces.includes(space.toString())}`)
+                if (!playerSpaces.includes(space.toString())) {
                     break;
                 } else {
                     matches++;
@@ -113,7 +114,8 @@ const startButton = document.querySelector('.start-button');
 const resetButton = document.querySelector('.reset-button');
 const closeButton = document.querySelector('.close-button');
 const form = document.querySelector('form');
-const dialog = document.getElementById("start-game-dialog")
+const dialog = document.getElementById("start-game-dialog");
+const board = document.querySelector('.board');
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -135,23 +137,10 @@ closeButton.addEventListener('click', () => {
     dialog.close();
 })
 
+board.addEventListener('click', (event) => {
+    if (event.target.classList.contains("space")) {
+        const spaceElement = event.target.closest(".space");
 
-// const displayBoard = (() => {
-//     const display = (gameboard) => {
-//         let player1Spaces = gameboard.getPlayer1Spaces();
-//         let player2Spaces = gameboard.getPlayer2Spaces();
-
-
-//         for (let space of player1Spaces) {
-//             let spaceDiv = document.getElementById(space);
-//             spaceDiv.textContent = "X";
-//         }
-
-//         for (let space of player2Spaces) {
-//             let spaceDiv = document.getElementById(space);
-//             spaceDiv.textContent = "O";
-//         }
-//     }
-
-//     return {display};
-// })();
+        gameboard.mark(spaceElement.id);
+    }
+})
