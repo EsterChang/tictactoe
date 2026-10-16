@@ -27,6 +27,7 @@ const gameboard = (() => {
         const spaces = document.querySelectorAll('.space');
         spaces.forEach(space => {
             space.textContent = '';
+            space.style.backgroundColor = "white";
         });
         displayText.textContent = "Click 'Start Game' to play";
     }
@@ -82,6 +83,7 @@ const gameboard = (() => {
                 }
             }
             if (matches === 3) {
+                highlightWin(combo);
                 displayText.textContent = `${currentPlayer.name} WINS! Game over.`;
                 gameOver = true;
                 return;
@@ -90,6 +92,13 @@ const gameboard = (() => {
         if (numOccupiedSpaces === 9) {
             displayText.textContent = "TIED. Game over."
             gameOver = true;
+        }
+    }
+
+    const highlightWin = (combo) => {
+        for (const space of combo) {
+            let spaceDiv = document.getElementById(space);
+            spaceDiv.style.backgroundColor = "lightgrey";
         }
     }
 
