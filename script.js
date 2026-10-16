@@ -1,3 +1,5 @@
+const displayText = document.querySelector('.display-text');
+
 function createPlayer(name) {
     return {name};
 }
@@ -20,11 +22,13 @@ const gameboard = (() => {
         player2Spaces = [];
         currentPlayer = null;
         gameOver = false;
+        numOccupiedSpaces = 0;
 
         const spaces = document.querySelectorAll('.space');
         spaces.forEach(space => {
             space.textContent = '';
         });
+        displayText.textContent = "Click 'Start Game' to play";
     }
 
     const init = (p1, p2) => {
@@ -32,52 +36,45 @@ const gameboard = (() => {
         player1 = p1;
         player2 = p2;
         currentPlayer = p1;
+        displayText.textContent = `${p1.name}'s turn (X)`;
     }
 
     const mark = (space) => {
-        if (gameOver) {
-            console.log("game over, please reset");
+        if (gameOver || !currentPlayer) {
             return;
         }
 
-        if (space < 1 || space > 9) {
-            console.log("invalid space");
-            return;
-        }
-
-        //check if specific space is occupied
         if (player1Spaces.includes(space) || player2Spaces.includes(space)) {
-            console.log("space already occupied");
             return;
         }
 
         if (currentPlayer === player1) {
-            console.log(`${player1.name} marked space ${space}`)
             player1Spaces.push(space);
 
             numOccupiedSpaces++;
             display(space, "X");
             checkWin(player1Spaces);
-            currentPlayer = player2;
-        } else if (currentPlayer === player2) {
-            console.log(`${player2.name} marked space ${space}`)
+            if (!gameOver) {
+                currentPlayer = player2;
+                displayText.textContent = `${currentPlayer.name}'s turn (O)`;
+            }
+        } else {
             player2Spaces.push(space);
 
             numOccupiedSpaces++;
             display(space, "O");
             checkWin(player2Spaces);
-            currentPlayer = player1;
-        } else {
-            console.log("curr player doesn't exist");
+            if (!gameOver) {
+                currentPlayer = player1;
+                displayText.textContent = `${currentPlayer.name}'s turn (X)`;
+            }
         }
     }
 
     const checkWin = (playerSpaces) => {
         for (const combo of winCombos) {
-            console.log(`checking combo ${JSON.stringify(combo)}`);
             let matches = 0;
             for (const space of combo) {
-                // console.log(`is ${space} in ${JSON.stringify(playerSpaces)}: ${playerSpaces.includes(space.toString())}`)
                 if (!playerSpaces.includes(space.toString())) {
                     break;
                 } else {
@@ -85,13 +82,13 @@ const gameboard = (() => {
                 }
             }
             if (matches === 3) {
-                console.log("winner!!");
+                displayText.textContent = `${currentPlayer.name} WINS! Game over.`;
                 gameOver = true;
                 return;
             }
         }
         if (numOccupiedSpaces === 9) {
-            console.log("game tied");
+            displayText.textContent = "TIED. Game over."
             gameOver = true;
         }
     }
@@ -138,7 +135,7 @@ closeButton.addEventListener('click', () => {
 })
 
 board.addEventListener('click', (event) => {
-    if (event.target.classList.contains("space")) {
+    if (gameboard.getCurrentPlayer() && event.target.classList.contains("space")) {
         const spaceElement = event.target.closest(".space");
 
         gameboard.mark(spaceElement.id);

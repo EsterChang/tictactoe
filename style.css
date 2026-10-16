@@ -55,3 +55,15 @@ dialog button {
     height: 50px;
     font-size: 30px;
 }
+
+.right-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.display-text {
+    font-size: 30px;
+    color: green;
+    background-color: lightgray;
+}
