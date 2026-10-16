@@ -20,6 +20,11 @@ const gameboard = (() => {
         player2Spaces = [];
         currentPlayer = null;
         gameOver = false;
+
+        const spaces = document.querySelectorAll('.space');
+        spaces.forEach(space => {
+            space.textContent = '';
+        });
     }
 
     const init = (p1, p2) => {
@@ -101,8 +106,35 @@ const gameboard = (() => {
     const getPlayer1Spaces = () => player1Spaces;
     const getPlayer2Spaces = () => player2Spaces;
 
-    return {init, mark, getPlayer1, getPlayer2, getCurrentPlayer, getPlayer1Spaces, getPlayer2Spaces};
+    return {init, reset, mark, getPlayer1, getPlayer2, getCurrentPlayer, getPlayer1Spaces, getPlayer2Spaces};
 })();
+
+const startButton = document.querySelector('.start-button');
+const resetButton = document.querySelector('.reset-button');
+const closeButton = document.querySelector('.close-button');
+const form = document.querySelector('form');
+const dialog = document.getElementById("start-game-dialog")
+
+form.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const player1Name = document.getElementById("p1Name").value;
+    const player2Name = document.getElementById("p2Name").value;
+
+    gameboard.init(createPlayer(player1Name), createPlayer(player2Name));
+
+    form.reset();
+    dialog.close();
+})
+
+resetButton.addEventListener('click', () => {
+    gameboard.reset();
+})
+
+closeButton.addEventListener('click', () => {
+    dialog.close();
+})
+
 
 // const displayBoard = (() => {
 //     const display = (gameboard) => {
