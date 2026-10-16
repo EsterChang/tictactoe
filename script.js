@@ -1,0 +1,125 @@
+function createPlayer(name) {
+    return {name};
+}
+
+const gameboard = (() => {
+    let currentPlayer;
+    let player1;
+    let player2;
+
+    let player1Spaces = [];
+    let player2Spaces = [];
+    let numOccupiedSpaces = 0;
+
+    let gameOver = false;
+
+    const winCombos = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
+
+    const reset = () => {
+        player1Spaces = [];
+        player2Spaces = [];
+        currentPlayer = null;
+        gameOver = false;
+    }
+
+    const init = (p1, p2) => {
+        reset();
+        player1 = p1;
+        player2 = p2;
+        currentPlayer = p1;
+    }
+
+    const mark = (space) => {
+        if (gameOver) {
+            console.log("game over, please reset");
+            return;
+        }
+
+        if (space < 1 || space > 9) {
+            console.log("invalid space");
+            return;
+        }
+
+        //check if specific space is occupied
+        if (player1Spaces.includes(space) || player2Spaces.includes(space)) {
+            console.log("space already occupied");
+            return;
+        }
+
+        if (currentPlayer === player1) {
+            console.log(`${player1.name} marked space ${space}`)
+            player1Spaces.push(space);
+
+            numOccupiedSpaces++;
+            display(space, "X");
+            checkWin(player1Spaces);
+            currentPlayer = player2;
+        } else if (currentPlayer === player2) {
+            console.log(`${player2.name} marked space ${space}`)
+            player2Spaces.push(space);
+
+            numOccupiedSpaces++;
+            display(space, "O");
+            checkWin(player2Spaces);
+            currentPlayer = player1;
+        } else {
+            console.log("curr player doesn't exist");
+        }
+    }
+
+    const checkWin = (playerSpaces) => {
+        for (const combo of winCombos) {
+            console.log(`checking combo ${combo}`);
+            let matches = 0;
+            for (const space of combo) {
+                if (!playerSpaces.includes(space)) {
+                    break;
+                } else {
+                    matches++;
+                }
+            }
+            if (matches === 3) {
+                console.log("winner!!");
+                gameOver = true;
+                return;
+            }
+        }
+        if (numOccupiedSpaces === 9) {
+            console.log("game tied");
+            gameOver = true;
+        }
+    }
+
+    const display = (space, mark) => {
+        let spaceDiv = document.getElementById(space);
+        spaceDiv.textContent = mark;
+    }
+
+    const getPlayer1 = () => player1;
+    const getPlayer2 = () => player2;
+    const getCurrentPlayer = () => currentPlayer;
+    const getPlayer1Spaces = () => player1Spaces;
+    const getPlayer2Spaces = () => player2Spaces;
+
+    return {init, mark, getPlayer1, getPlayer2, getCurrentPlayer, getPlayer1Spaces, getPlayer2Spaces};
+})();
+
+// const displayBoard = (() => {
+//     const display = (gameboard) => {
+//         let player1Spaces = gameboard.getPlayer1Spaces();
+//         let player2Spaces = gameboard.getPlayer2Spaces();
+
+
+//         for (let space of player1Spaces) {
+//             let spaceDiv = document.getElementById(space);
+//             spaceDiv.textContent = "X";
+//         }
+
+//         for (let space of player2Spaces) {
+//             let spaceDiv = document.getElementById(space);
+//             spaceDiv.textContent = "O";
+//         }
+//     }
+
+//     return {display};
+// })();
